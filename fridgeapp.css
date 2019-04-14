@@ -1,0 +1,183 @@
+* {
+    margin: 0;
+    padding: 0;
+    color: black;
+    font-family: 'Raleway', sans-serif;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+        "aside section";
+    min-height: 100vh;
+    width: 100%;
+}
+
+.container-flex {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.nav-flex-container ul {
+    background-color: #99cccc;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    font-weight: bolder;
+    padding: .5em;
+}
+
+header,
+footer {
+    background-color: mistyrose;
+    text-align: center;
+    padding: 1em;
+}
+
+.lefthead {
+    grid-area: lhead;
+    margin: .1em;
+}
+
+.righthead {
+    grid-area: rhead;
+    margin: .1em;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.headerdisplay {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+        "lhead rhead rhead rhead";
+}
+
+.aside {
+    background-color: #FDF0C4;
+    padding: .5em;
+    padding-right: .5em;
+}
+
+/*.aside2 {
+      background-color: lightblue; 
+      padding: 2em;  
+}*/
+
+asidebox1 {
+    grid-area: ab1;
+    margin: 1em;
+    padding: .5em;
+}
+
+asidebox2 {
+    grid-area: ab2;
+    margin: 1em;
+    padding: .5em;
+}
+
+asidebox3 {
+    grid-area: ab3;
+    margin: 1em;
+    padding: .5em;
+}
+
+.asideboxes {
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-areas:
+        "ab1"
+        "ab2"
+        "ab3";
+}
+
+.section {
+    background-color: #FDF0C4;
+    padding: .5em;
+    padding-left: .5em;
+}
+
+.section2 {
+    width: 100%;
+    text-align: center;
+    background-color: #FDF0C4;
+    padding: .75em;
+}
+
+.image1 {
+    display: block;
+    padding: .5em;
+    margin: .5em;
+    max-width: 90%;
+    max-height: 75%;
+}
+
+.image2 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+p {
+    margin-bottom: 4em;
+    margin-top: 1em;
+    margin-left: .5em;
+    margin-right: .5em;
+    font-size: 1.5em;
+}
+
+h1 {
+    text-align: center;
+    font-size: 4em;
+}
+
+h2 {
+    font-size: 2em;
+    text-align: center;
+    margin-top: 1em;
+}
+
+ul {
+    padding: 1em;
+}
+
+iframe {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 40em) {
+    .container {
+        flex-direction: row;
+    }
+
+    .aside {
+        flex: 1;
+        order: 1;
+    }
+
+    .section {
+        flex: 1;
+        order: 2;
+    }
+}
+
+@media (min-width: 70em) {
+    .container {
+        flex-direction: row;
+    }
+
+    .aside {
+        flex: 1;
+        order: 1;
+    }
+
+    .section {
+        flex: 1;
+        order: 2;
+    }
+}

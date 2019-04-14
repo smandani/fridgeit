@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="log">
+
+    <script th:src="@{/resources/js/dateTimeService.js}" src="../resources/js/dateTimeService.js"></script>
+
+    <!-- main function that loads logView.html -->
+    <div ng-app="fridgeApp" ng-controller="fridgeCtrl as ctrl">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+
+                        <!-- log entry header -->
+                        <div class="panel-heading">
+                            <h3>Items in Fridge</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-bordered" name="log_table">
+
+                                <!-- table column headers -->
+                                <thead>
+                                    <tr>
+                                        <th>Item Type</th>
+                                        <th>Item Name</th>
+                                        <th>Date added</th>
+                                        <th>Expiration Date</th>
+                                    </tr>
+                                </thead>
+
+                                <!-- log entry for every row, ordered by date -->
+                                <tbody>
+                                    <tr name="itemsTableRow" ng-repeat="l in ctrl.items">
+                                        <td name="typeCell">{{l.type}}</td>
+                                        <td name="nameCell">{{l.name}}</td>
+                                        <td name="dateCell">{{l.dateAdded | date : 'EEE MMM dd
+											h:mm:ss a yyyy'}}</td>
+                                        <td name="expirationDateCell">{{l.expirationDate | date : 'EEE MMM dd
+											h:mm:ss a yyyy'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <br>
+
+                            <!-- container for searching transactions -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading ">Search Logs by Date</div>
+                                        <div class="panel-body">
+                                            <form class="form-horizontal" role="form" name="viewLogForm" ng-submit="ctrl.searchByDate()">
+                                                <br>
+
+                                                <!-- row that contains all interactive fields -->
+                                                <div class="row">
+
+                                                    <!-- start date -->
+                                                    <div class="col-md-5">
+                                                        <label>From:</label>
+                                                        <div class="row">
+                                                            <div class="col-md-7">
+                                                                <input type="date" class="form-control" name="startDate" ng-model="ctrl.startDate" ng-max="ctrl.endDate" required />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- end date -->
+                                                    <div class="col-md-5">
+                                                        <label>To:</label>
+                                                        <div class="row">
+                                                            <div class="col-md-7">
+                                                                <input type="date" class="form-control" name="endDate" ng-model="ctrl.endDate" required />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- submit button -->
+                                                    <div class="col-md-2">
+                                                        <label>Submit:</label>
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <button type="submit" class="btn btn-success" ng-disabled="!viewLogForm.$valid" name="submit">Search
+                                                                    By Date</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- row that contains interactive fields -->
+                                                    <div class="row">
+                                                        <div class="col-md-12"></div>
+                                                    </div>
+
+                                                </div>
+                                            </form>
+
+                                            <br />
+
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row" style="width: 300px; margin: 0 auto;">
+                                        <button class="btn btn-success" style="float: left;" ng-click="ctrl.prevPage()">Previous</button>
+                                        <button class="btn btn-success" style="float: right" ng-click="ctrl.nextPage()">Next</button>
+                                        <p style="margin: 10 auto; width: 100px; text-align: center;" ng-bind="ctrl.pageString">Page: 1</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var App = angular.module('logsApp', ['dateTimeServices']);
+
+            angular.module("fridgeApp").controller('fridgeCtrl', function($scope, $http, $filter, dateTimeService) {
+                var self = this;
+                self.items = [];
+
+                self.updateTable = function() {
+                    $http.get("/fridge").then(function(response) {
+                        self.items = response.data;
+                        if (self.logs.length > 0) {
+                            self.displayTable = true;
+                        } else {
+                            self.displayTable = false;
+                        }
+                    });
+                }
+
+                self.searchByDate = function() {
+
+                    self.requestParams.startDate = self.startDate.toISOString();
+                    self.requestParams.endDate = self.endDate.toISOString();
+
+                    self.updateTable();
+                }
+                var checkValidDateRange = function(dateRange) {
+                    var err = [];
+                    if (!dateTimeService.isValidDate(dateRange.startDate)) {
+                        err.push("Start date is in an invalid format");
+                    }
+                    if (!dateTimeService.isValidDate(dateRange.endDate)) {
+                        err.push("End date is in an invalid format");
+                    }
+                    if (dateRange.startDate.getFullYear() > dateRange.endDate
+                        .getFullYear()) {
+                        err.push("Start date must come before end date.");
+                    }
+                    if (dateRange.startDate.getFullYear() == dateRange.endDate
+                        .getFullYear() &&
+                        dateRange.startDate.getFullMonth() > dateRange.endDate
+                        .getMonth()) {
+                        err.push("Start date must come before end date.");
+                    }
+                    if (dateRange.startDate.getFullYear() == dateRange.endDate
+                        .getFullYear() &&
+                        dateRange.startDate.getFullMonth() == dateRange.endDate
+                        .getMonth() &&
+                        dateRange.startDate.getDate() > dateRange.endDate
+                        .getDate()) {
+                        err.push("Start date must come before end date.");
+                    }
+                    return err.join(". ");
+                }
+
+                self.updateTable();
+
+
+
+            });
+
+        </script>
+    </div>
+</div>
+
+</html>
