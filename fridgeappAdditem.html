@@ -1,0 +1,35 @@
+    <!DOCTYPE HTML>
+    <html xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+    <title>Add an Item</title>
+
+</head>
+
+<body>
+    <form action="#" th:action="@{/api/v1/save}" th:object="${form}" method="post">
+        <fieldset>
+            <input type="submit" id="submitButton" th:value="Save">
+            <input type="reset" id="resetButton" name="reset" th:value="Reset" />
+            <table>
+                <thead>
+                    <tr>
+                        <th> Name</th>
+                        <th> Date Added </th>
+                        <th> Expiration Date</th>
+                        <th> Type </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item, itemStat : *{items}">
+                        <td><input th:field="*{items[__${itemStat.index}__].name}" /></td>
+                        <td><input th:field="*{items[__${itemStat.index}__].expirationDate}" /></td>
+                        <td><input th:field="*{items[__${itemStat.index}__].dateAdded}" /></td>
+                        <td><input th:field="*{items[__${itemStat.index}__].type}" /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+    </form>
+
+</body></html>
